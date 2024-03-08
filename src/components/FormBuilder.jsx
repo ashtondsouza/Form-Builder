@@ -3,7 +3,8 @@ import Canvas from "./Canvas";
 import AttributePanel from "./AttributePanel";
 import FormElementList from "./FormElementList";
 import FormOutput from "./FormOutput";
-import html2pdf from "html2pdf.js";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const FormBuilder = () => {
   const [selectedElement, setSelectedElement] = useState(null);
@@ -38,16 +39,15 @@ const FormBuilder = () => {
   };
 
   const handleGeneratePDF = () => {
-    const formOutputHTML = document.querySelector(".form-output").outerHTML;
-    const element = document.createElement("div");
-    element.innerHTML = formOutputHTML;
-    html2pdf(element, {
-      margin: 1,
-      filename: "form_output.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { dpi: 192, letterRendering: true },
-      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    const doc = new jsPDF();
+
+    // Add content to the PDF document
+    formElements.forEach((element, index) => {
+      doc.text(20, 10 + index * 10, `${element.label}: ${element.value}`);
     });
+
+    // Save the PDF
+    doc.save("form_output.pdf");
   };
   return (
     <div className="container mx-auto p-8">
