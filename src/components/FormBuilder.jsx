@@ -41,12 +41,9 @@ const FormBuilder = () => {
   const handleGeneratePDF = () => {
     const doc = new jsPDF();
 
-    // Add content to the PDF document
     formElements.forEach((element, index) => {
       doc.text(20, 10 + index * 10, `${element.label}: ${element.value}`);
     });
-
-    // Save the PDF
     doc.save("form_output.pdf");
   };
   return (
