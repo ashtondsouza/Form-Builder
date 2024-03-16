@@ -1,22 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Phone = ({ onChange }) => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-
-  const handleChange = (e) => {
-    const { value } = e.target;
-    setPhoneNumber(value);
-    onChange && onChange(value);
-  };
-
+const Phone = () => {
+ 
   return (
-    <div>
-      <label>Phone Number:</label>
+    <div className="mt-4">
       <input
         type="tel"
-        placeholder="Enter your phone number"
-        value={phoneNumber}
-        onChange={handleChange}
+        placeholder="Enter phone number"
+        className="border-sky-600 border-b-2 border-dashed p-2 mb-2 focus:outline-none focus:border-blue-500"
         required
       />
     </div>

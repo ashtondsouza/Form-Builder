@@ -19,7 +19,7 @@ const FormElementList = ({ onSelect }) => {
   ];
 
   return (
-    <div className="w-[200px] bg-gray-100 p-4">
+    <div className="w-[200px] bg-gray-100 p-4 border border-1 border-black border-solid shadow-md">
       <h2 className="w-[150px] text-lg font-semibold mb-4">Form Elements</h2>
       <div className="space-y-2">
         {formElements.map((element) => (

@@ -1,36 +1,45 @@
 import React, { useState } from "react";
+import { MdLibraryAdd, MdDelete } from "react-icons/md";
 
-const Checkbox = ({ onChange }) => {
-  const [checked, setChecked] = useState(false);
-  const [label, setLabel] = useState("Checkbox");
+const Checkbox = () => {
+  const [checkboxes, setCheckboxes] = useState([]);
+  const [newCheckboxLabel, setNewCheckboxLabel] = useState("");
 
-  const handleCheckboxChange = (e) => {
-    setChecked(e.target.checked);
-    onChange && onChange({ checked: e.target.checked, label });
+  const handleAddCheckbox = () => {
+    if (newCheckboxLabel.trim() !== "") {
+      const newCheckbox = { id: checkboxes.length + 1, label: newCheckboxLabel.trim() };
+      setCheckboxes([...checkboxes, newCheckbox]);
+      setNewCheckboxLabel(""); 
+    }
   };
 
   const handleLabelChange = (e) => {
-    setLabel(e.target.value);
-    onChange && onChange({ checked, label: e.target.value });
+    setNewCheckboxLabel(e.target.value);
+  };
+
+  const handleDeleteCheckbox = (id) => {
+    setCheckboxes(checkboxes.filter((checkbox) => checkbox.id !== id));
   };
 
   return (
     <div>
-      <label>
+      {checkboxes.map((checkbox) => (
+        <div key={checkbox.id} className="flex h-6 w-auto items-center gap-1 mb-2">
+          <input  type="checkbox" />
+          <label>{checkbox.label}</label>
+          <button className='text-red-400' onClick={() => handleDeleteCheckbox(checkbox.id)}><MdDelete /></button>
+        </div>
+      ))}
+      <div className="flex gap-2 mt-4">
         <input
-          type="checkbox"
-          checked={checked}
-          onChange={handleCheckboxChange}
+          type="text"
+          placeholder="Enter Checkbox Label"
+          value={newCheckboxLabel}
+          onChange={handleLabelChange}
+          className="border-solid border-b-2 border-sky-600"
         />
-        {label}
-      </label>
-      <input
-        type="text"
-        placeholder="Label"
-        className="border border-gray-300 rounded-md p-2 mb-2 focus:outline-none focus:border-blue-500"
-        value={label}
-        onChange={handleLabelChange}
-      />
+        <button className="text-green-600 text-xl" onClick={handleAddCheckbox}><MdLibraryAdd /></button>
+      </div>
     </div>
   );
 };

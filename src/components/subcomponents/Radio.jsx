@@ -1,36 +1,45 @@
 import React, { useState } from "react";
+import { MdLibraryAdd, MdDelete } from "react-icons/md";
 
-const Radio = ({ onChange }) => {
-  const [checked, setChecked] = useState(false);
-  const [label, setLabel] = useState("Radio");
+const Radio = () => {
+  const [radios, setRadios] = useState([]);
+  const [newRadioLabel, setNewRadioLabel] = useState("");
 
-  const handleRadioChange = (e) => {
-    setChecked(e.target.checked);
-    onChange && onChange({ checked: e.target.checked, label });
+  const handleAddRadio = () => {
+    if (newRadioLabel.trim() !== "") {
+      const newRadio = { id: radios.length + 1, label: newRadioLabel.trim() };
+      setRadios([...radios, newRadio]);
+      setNewRadioLabel(""); 
+    }
   };
 
   const handleLabelChange = (e) => {
-    setLabel(e.target.value);
-    onChange && onChange({ checked, label: e.target.value });
+    setNewRadioLabel(e.target.value);
+  };
+
+  const handleDeleteRadio = (id) => {
+    setRadios(radios.filter((radio) => radio.id !== id));
   };
 
   return (
     <div>
-      <label>
+      {radios.map((radio) => (
+        <div key={radio.id} className="flex h-6 w-auto items-center gap-1 mb-2">
+          <input  type="radio" />
+          <label>{radio.label}</label>
+          <button className='text-red-400' onClick={() => handleDeleteRadio(radio.id)}><MdDelete /></button>
+        </div>
+      ))}
+      <div className="flex gap-2 mt-4">
         <input
-          type="radio"
-          checked={checked}
-          onChange={handleRadioChange}
+          type="text"
+          placeholder="Enter Checkbox Label"
+          value={newRadioLabel}
+          onChange={handleLabelChange}
+          className="border-solid border-b-2 border-sky-600"
         />
-        {label}
-      </label>
-      <input
-        type="text"
-        placeholder="Label"
-        className="border border-gray-300 rounded-md p-2 mb-2 focus:outline-none focus:border-blue-500"
-        value={label}
-        onChange={handleLabelChange}
-      />
+        <button className="text-green-600 text-xl" onClick={handleAddRadio}><MdLibraryAdd /></button>
+      </div>
     </div>
   );
 };

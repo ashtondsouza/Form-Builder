@@ -1,22 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Input = ({ onChange }) => {
-  const [label, setLabel] = useState("Input");
-
-  const handleChange = (e) => {
-    setLabel(e.target.value);
-    onChange && onChange(e.target.value);
-  };
-
+const Input = () => {
+ 
   return (
-    <div>
-      <label>Label:</label>
+    <div className="h-20 w-[520px] bg-white border-[2px] border-solid border-sky-200">
       <input
         type="text"
-        placeholder="Input"
-        className="border border-gray-300 rounded-md p-2 mb-2 focus:outline-none focus:border-blue-500"
-        value={label}
-        onChange={handleChange}
+        placeholder="Enter here"
+        className="border-sky-600 border-b-2 border-dashed p-2 mb-2 w-[350px] text-start  focus:outline-none focus:border-blue-500"
+        
       />
     </div>
   );

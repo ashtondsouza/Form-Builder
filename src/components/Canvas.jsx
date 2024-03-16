@@ -1,6 +1,8 @@
-import React from "react";
+import React,{useState} from "react";
 import { MdDeleteForever } from "react-icons/md";
-import { FaGear } from "react-icons/fa6";
+import { GrBold } from "react-icons/gr";
+import { RiItalic } from "react-icons/ri";
+import { RiUnderline } from "react-icons/ri";
 import Input from "./subcomponents/Input";
 import Textarea from "./subcomponents/Textarea";
 import Select from "./subcomponents/Select";
@@ -12,32 +14,64 @@ import Phone from "./subcomponents/Phone";
 import Radio from "./subcomponents/Radio";
 import TimePicker from "./subcomponents/TimePicker";
 
-const Canvas = ({ onSelect, setSelectedElementId, formElements, setFormElements }) => {
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const elementType = event.dataTransfer.getData("text/plain");
-    const newElement = { id: formElements.length + 1, type: elementType, label: elementType };
-    setFormElements([...formElements, newElement]);
-  };
+const Canvas = ({ formElements, setFormElements }) => {
+
+  const [onEdit, setOnEdit] = useState(false);
+  const [editedField, setEditedField] = useState("");
+  const [boldState, setBoldState] = useState({});
+  const [italicState, setItalicState] = useState({});
+  const [underlineState, setUnderlineState] = useState({});
+    const handleBoldClick = (id) => {
+      setBoldState((prevState) => ({
+        ...prevState,
+        [id]: !prevState[id]
+      }));
+    };
+  
+    const handleItalicClick = (id) => {
+      setItalicState((prevState) => ({
+        ...prevState,
+        [id]: !prevState[id]
+      }));
+    };
+  
+    const handleUnderlineClick = (id) => {
+      setUnderlineState((prevState) => ({
+        ...prevState,
+        [id]: !prevState[id]
+      }));
+    };
+
+  const editField = (fieldName, fieldLabel) => {
+    const formFields = [...formElements];
+    const fieldIndex = formFields.findIndex(f => f.id === fieldName);
+    if (fieldIndex > -1) {
+        formFields[fieldIndex].label = fieldLabel;
+        setFormElements(formFields);
+    }
+}
+const handleDrop = (event) => {
+  event.preventDefault();
+  const elementType = event.dataTransfer.getData("text/plain");
+  const newElement = { id: formElements.length + 1, type: elementType, label: elementType };
+  setFormElements([...formElements, newElement]);
+};
+
 
   const handleDelete = (id) => {
     setFormElements(formElements.filter((element) => element.id !== id));
-  };
-
-  const handleSelect = (id) => {
-    setSelectedElementId(id);
-    onSelect && onSelect(id);
   };
 
   const allowDrop = (event) => {
     event.preventDefault();
   };
 
+
   return (
     <div className="flex">
-      <div className="w-[650px] bg-gray-200 p-4" onDrop={handleDrop} onDragOver={allowDrop}>
+      <div className="w-[650px] bg-gray-200 p-4 shadow-xl border border-1 border-solid border-black"   onDrop={handleDrop} onDragOver={allowDrop}>
         <h2 className="text-lg font-semibold mb-4">Canvas</h2>
-        <div className="border border-dashed border-gray-300 p-4 rounded-md">
+        <div className="border border-solid border-1 border-sky-500 bg-gray-100 p-4 rounded-md shadow-md">
           {formElements.map((element) => {
             let ElementComponent;
             switch (element.type) {
@@ -75,15 +109,73 @@ const Canvas = ({ onSelect, setSelectedElementId, formElements, setFormElements 
                 return null;
             }
             return (
-              <div key={element.id} className="relative mb-4">
-                <ElementComponent label={element.label} onChange={(value) => handleLabelChange(element.id, value)} />
-                <div className="absolute top-0 right-0 -mt-2 mr-2 flex">
-                  <button
-                    className="bg-blue-500 text-white p-1 rounded-full mr-1"
-                    onClick={() => handleSelect(element.id)}
+              <div key={element.id} 
+
+              className='relative mb-4 w-auto h-auto'>
+                
+                {onEdit && editedField === element.id ? (
+                 <>
+                 <input
+                   className="mb-6 p-[6px] w-[520px] border-sky-600 border-b-4"
+                   type="text"
+                   style={{
+                     fontWeight: boldState[element.id] ? "bold" : "normal",
+                     fontStyle: italicState[element.id] ? "italic" : "normal",
+                     textDecoration: underlineState[element.id] ? "underline" : "none"
+                   }}
+                   value={element.label}
+                   onChange={(e) => editField(element.id, e.target.value)}
+                   onBlur={() => {
+                     setOnEdit(false);
+                     setEditedField("");
+                   }}
+                 />
+                 <div className=" ">
+                   <ul className="flex ml-6 gap-1 absolute top-[42px] ">
+                   <li className={`border-[1px] border-solid border-sky-500 bg-gray-200 w-[35px] h-[30px] flex justify-center ${boldState[element.id] ? 'bg-blue-200' : ''}`}>
+                          <button onClick={() => handleBoldClick(element.id)}><GrBold /></button>
+                        </li>
+                        <li className={`border-[1px] border-solid border-sky-500 bg-gray-200 w-[35px] h-[30px] flex justify-center ${italicState[element.id] ? 'bg-blue-200' : ''}`}>
+                          <button onClick={() => handleItalicClick(element.id)}><RiItalic /></button>
+                        </li>
+                        <li className={`border-[1px] border-solid border-sky-500 bg-gray-200 w-[35px] h-[30px] flex justify-center ${underlineState[element.id] ? 'bg-blue-200' : ''}`}>
+                          <button onClick={() => handleUnderlineClick(element.id)}><RiUnderline /></button>
+                        </li>
+                   </ul>
+                 </div>
+               </>
+                ) : (
+                  <label
+                    onClick={() => {
+                      setOnEdit(true);
+                      setEditedField(element.id);
+                
+                    
+                    }}
                   >
-                    <FaGear />
-                  </button>
+                    <div
+                      className={`mb-2 p-[6px] w-[520px] border-sky-600 border-b-4 bg-white ${
+                        boldState[element.id] ? "bold " : ""
+                      }${italicState[element.id] ? "italic " : ""}${underlineState[element.id] ? "underline" : ""}`}
+                    >
+                      {element.label || "Untiled Question"}
+                    </div>
+                  </label>
+                  
+                )}
+               
+                <ElementComponent />
+                <div className="flex items-center justify-end mt-2 ">
+                  <input
+                    type="checkbox"
+                    checked={element.required}
+                    onChange={() => toggleRequired(element.id)}
+                    className="mr-2"
+                  />
+                  <label className="text-gray-600">Required</label>
+                </div>
+
+                <div className="absolute top-0 right-0 -mt-2 mr-2 flex">
                   <button
                     className="bg-red-400 text-white p-1 rounded-full"
                     onClick={() => handleDelete(element.id)}

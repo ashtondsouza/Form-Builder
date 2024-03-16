@@ -1,22 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Email = ({ onChange }) => {
-  const [email, setEmail] = useState("");
-
-  const handleChange = (e) => {
-    const { value } = e.target;
-    setEmail(value);
-    onChange && onChange(value);
-  };
-
+const Email = () => {
+  
   return (
-    <div>
-      <label>Email:</label>
+    <div className="pt-4">
       <input
         type="email"
         placeholder="Enter your email"
-        value={email}
-        onChange={handleChange}
+        className="border-sky-600 border-b-2 border-dashed p-2 mb-2 w-[350px] text-start  focus:outline-none focus:border-blue-500 "
         required
       />
     </div>
